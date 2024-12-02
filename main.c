@@ -129,6 +129,13 @@ void destroy_window(void) {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+    exit(EXIT_SUCCESS);
+}
+
+// Game over, destroy window
+void game_over(void) {
+    printf("Game over\n");
+    destroy_window();
 }
 
 /**
@@ -152,7 +159,6 @@ void setup(void) {
 // Spawn a new bullet, crash if no more space for a bullet
 void spawn_bullet(Time time)
 {
-    printf("Spawning bullet\n");
     size_t i;
     for (i = 0; i < maxBullets && bulletsUsed[i]; i++);
     if (i == maxBullets)
@@ -164,8 +170,8 @@ void spawn_bullet(Time time)
     Bullet* bullet = bullets + i;
     bullet->birth = time;
 
-    bullet->movingRect.w = PLAYER_SIZE;
-    bullet->movingRect.h = PLAYER_SIZE;
+    bullet->movingRect.w = BULLET_SIZE;
+    bullet->movingRect.h = BULLET_SIZE;
 
     // todo more advanced logic for bullet spawn location
     bullet->movingRect.pos.x = player.pos.x + WINDOW_WIDTH * 0.5;
@@ -218,6 +224,11 @@ void update(void) {
     for (size_t i = 0; i < maxBullets; i++) {
         if (bulletsUsed[i])
         {
+            if (would_collide(player, bullets[i].movingRect, delta) != -1)
+            {
+                // Player collided with bullet
+                game_over();
+            }
             move_rect(&(bullets[i].movingRect), delta);
         }
     }

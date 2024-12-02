@@ -2,6 +2,7 @@
 #define RECT_H
 
 #include <math.h>
+#include <stdbool.h>
 
 typedef struct OrderedPair {
     float x, y;
@@ -26,5 +27,14 @@ OrderedPair relative_pos(OrderedPair pos, OrderedPair relativeTo);
 
 // Scale vector to given desired magnitude
 OrderedPair scaled_vector(OrderedPair vec, float desiredMagnitude);
+
+// Edges of a rectangle
+typedef enum Edge {
+    EDGE_TOP = 0, EDGE_LEFT = 1, EDGE_BOTTOM = 2, EDGE_RIGHT = 3, EDGE_NONE = -1
+} Edge;
+
+// float get_edge(MovingRect rect, Edge edge);
+
+Edge would_collide(MovingRect rect1, MovingRect rect2, float delta);
 
 #endif // !RECT_H

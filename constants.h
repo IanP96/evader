@@ -16,10 +16,11 @@ float const PLAYER_SPEED = 0.4;
 int const maxBullets = 1000;
 int const BULLET_SIZE = 20;
 
-Colour bulletColour = {255, 0, 0};
+Colour bulletColour = {200, 0, 0};
 Colour playerColour = {0, 0, 255};
-Colour bgColour = {10, 10, 10};
-Colour platformColour = {0, 255, 0};
+// Sky colour
+Colour bgColour = {175, 246, 255};
+Colour platformColour = {0, 200, 0};
 
 int const platformGridSize = 10;
 int const numPlatforms = platformGridSize * platformGridSize;

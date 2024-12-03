@@ -17,18 +17,22 @@ float const playerJumpSpeed = 0.5;
 // Max num bullets possible to exist at once
 int const maxBullets = 1000;
 int const BULLET_SIZE = 20;
+int const coinSize = 20;
 
 Colour bulletColour = {200, 0, 0};
 Colour playerColour = {0, 0, 255};
 // Sky colour
 Colour bgColour = {205, 246, 255};
 Colour platformColour = {0, 200, 0};
+Colour coinColour = {230, 230, 0};
 
 int const platformGridSize = 10;
 int const numPlatforms = platformGridSize * platformGridSize;
 int const platformHeight = 20;
 int const platformWidth = 100;
 int const platformSeparation = 200;
+
+int const numCoins = 30;
 
 float const gravity = 0.01;
 float const terminalVelocity = 3;

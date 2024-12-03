@@ -25,10 +25,15 @@ MovingRect player;
 struct Keys {
     bool l, r, u, d;
 } keys = {false, false, false, false};
+
 Bullet bullets[maxBullets];
 bool bulletsUsed[maxBullets];
 
 MovingRect platforms[numPlatforms];
+
+MovingRect coins[numCoins];
+int numCoinsLeft = numCoins;
+bool coinsCollected[numCoins];
 
 // returns 1 on success, 0 on failure
 bool init_window(void) {
@@ -64,6 +69,99 @@ bool init_window(void) {
     }
     
     return 1;
+}
+
+// Destroy SDL renderer and window
+void destroy_window(void) {
+    printf("Destroying window\n");
+    // destroying in reverse order of creation
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    exit(EXIT_SUCCESS);
+}
+
+// Game over, destroy window
+void game_over(void) {
+    printf("Game over\n");
+    destroy_window();
+}
+
+/**
+ * @brief Set initial state before looping
+ * 
+ */
+void setup(void) {
+    lastFrameTime = SDL_GetTicks64();
+    lastBulletSpawnTime = SDL_GetTicks64();
+    memset(bulletsUsed, false, sizeof(bulletsUsed));
+    player.pos.x = 0;
+    player.pos.y = 0;
+    player.w = PLAYER_SIZE;
+    player.h = PLAYER_SIZE;
+    player.dir.x = 0;
+    player.dir.y = 0;
+
+    bulletSpawnDelay = 1000;
+
+    // Choose locations for coins
+    // Which platforms have coins above them
+    bool hasCoin[numPlatforms];
+    memset(hasCoin, false, sizeof(hasCoin));
+    for (int i = 0; i < numCoins; i++)
+    {
+        int spotsRemaining = numPlatforms - i;
+        int nextCoin = arc4random_uniform(spotsRemaining);
+        int j = -1, count = -1;
+        while (count != nextCoin)
+        {
+            j++;
+            if (!hasCoin[j])
+                count++;
+        }
+        hasCoin[j] = true;
+    }
+
+    memset(coinsCollected, false, sizeof(coinsCollected));
+    int coinCount = 0;
+
+    // Create platforms, spread in grid with some random variation
+    for (size_t i = 0; i < numPlatforms; i++)
+    {
+        // No movement for platforms
+        platforms[i].dir.x = 0;
+        platforms[i].dir.y = 0;
+
+        // Positioning
+        int col = i % platformGridSize;
+        int row = i / platformGridSize;
+        platforms[i].pos.x = col * (platformSeparation + platformWidth) + arc4random_uniform(platformSeparation);
+        platforms[i].pos.y = row * (platformSeparation + platformHeight) + arc4random_uniform(platformSeparation);
+
+        // Size
+        platforms[i].w = platformWidth;
+        platforms[i].h = platformHeight;
+
+        // Spawn player above starting platform
+        if (row == 0 && col == platformGridSize / 2)
+        {
+            player.pos = platforms[i].pos;
+            player.pos.y -= platformSeparation;
+        }
+
+        // Spawn coin if needed
+        if (hasCoin[i])
+        {
+            coins[coinCount].dir.x = 0;
+            coins[coinCount].dir.y = 0;
+            coins[coinCount].pos = platforms[i].pos;
+            coins[coinCount].pos.y -= platformHeight + 1;
+            coins[coinCount].pos.x += (platformWidth - coinSize) / 2;
+            coins[coinCount].w = coinSize;
+            coins[coinCount].h = coinSize;
+            coinCount++;
+        }
+    }
 }
 
 void process_input(void) {
@@ -120,59 +218,6 @@ void process_input(void) {
     }
 }
 
-// Destroy SDL renderer and window
-void destroy_window(void) {
-    printf("Destroying window\n");
-    // destroying in reverse order of creation
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-    exit(EXIT_SUCCESS);
-}
-
-// Game over, destroy window
-void game_over(void) {
-    printf("Game over\n");
-    destroy_window();
-}
-
-/**
- * @brief Set initial state before looping
- * 
- */
-void setup(void) {
-    lastFrameTime = SDL_GetTicks64();
-    lastBulletSpawnTime = SDL_GetTicks64();
-    memset(bulletsUsed, false, sizeof(bulletsUsed));
-    player.pos.x = 0;
-    player.pos.y = 0;
-    player.w = PLAYER_SIZE;
-    player.h = PLAYER_SIZE;
-    player.dir.x = 0;
-    player.dir.y = 0;
-
-    bulletSpawnDelay = 1000;
-
-    // Create platforms, spread in grid with some random variation
-    for (size_t i = 0; i < numPlatforms; i++)
-    {
-        // No movement for platforms
-        platforms[i].dir.x = 0;
-        platforms[i].dir.y = 0;
-
-        // Positioning
-        int col = i % platformGridSize;
-        int row = i / platformGridSize;
-        platforms[i].pos.x = col * (platformSeparation + platformWidth) + arc4random_uniform(platformSeparation);
-        platforms[i].pos.y = row * (platformSeparation + platformHeight) + arc4random_uniform(platformSeparation);
-
-        // Size
-        platforms[i].w = platformWidth;
-        platforms[i].h = platformHeight;
-    }
-    
-}
-
 // Spawn a new bullet, crash if no more space for a bullet
 void spawn_bullet(Time time)
 {
@@ -220,7 +265,7 @@ void update(void) {
         spawn_bullet(currentTime);
     }
 
-    // move player
+    // Set player velocity
     player.dir.x = 0;
     if (keys.l) player.dir.x = -playerHorizontalSpeed;
     else if (keys.r) player.dir.x = playerHorizontalSpeed;
@@ -241,7 +286,18 @@ void update(void) {
     }
     if (onPlatform && keys.u)
         player.dir.y = -playerJumpSpeed;
-
+    
+    // Player collecting coins
+    for (size_t i = 0; i < numCoins; i++)
+    {
+        if (!coinsCollected[i] && would_collide(player, coins[i], delta) != EDGE_NONE)
+        {
+            // Coin collected
+            numCoinsLeft--;
+            coinsCollected[i] = true;
+        }
+    }
+    
     // Move bullets
     for (size_t i = 0; i < maxBullets; i++) {
         if (bulletsUsed[i])
@@ -281,6 +337,16 @@ void render(void) {
     for (size_t i = 0; i < numPlatforms; i++)
     {
         fill_rect_relative(renderer, platforms[i], player.pos);
+    }
+
+    // Draw coins
+    set_render_colour(renderer, coinColour);
+    for (int i = 0; i < numCoins; i++)
+    {
+        if (!coinsCollected[i])
+        {
+            fill_rect_relative(renderer, coins[i], player.pos);
+        }
     }
 
     SDL_RenderPresent(renderer); // buffer swap

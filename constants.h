@@ -21,7 +21,7 @@ int const BULLET_SIZE = 20;
 Colour bulletColour = {200, 0, 0};
 Colour playerColour = {0, 0, 255};
 // Sky colour
-Colour bgColour = {175, 246, 255};
+Colour bgColour = {205, 246, 255};
 Colour platformColour = {0, 200, 0};
 
 int const platformGridSize = 10;

@@ -28,6 +28,8 @@ struct Keys {
 Bullet bullets[maxBullets];
 bool bulletsUsed[maxBullets];
 
+MovingRect platforms[numPlatforms];
+
 // returns 1 on success, 0 on failure
 bool init_window(void) {
 
@@ -154,6 +156,25 @@ void setup(void) {
     player.dir.y = 0;
 
     bulletSpawnDelay = 1000;
+
+    // Create platforms, spread in grid with some random variation
+    for (size_t i = 0; i < numPlatforms; i++)
+    {
+        // No movement for platforms
+        platforms[i].dir.x = 0;
+        platforms[i].dir.y = 0;
+
+        // Positioning
+        int col = i % platformGridSize;
+        int row = i / platformGridSize;
+        platforms[i].pos.x = col * (platformSeparation + platformWidth) + arc4random_uniform(platformSeparation);
+        platforms[i].pos.y = row * (platformSeparation + platformHeight) + arc4random_uniform(platformSeparation);
+
+        // Size
+        platforms[i].w = platformWidth;
+        platforms[i].h = platformHeight;
+    }
+    
 }
 
 // Spawn a new bullet, crash if no more space for a bullet
@@ -252,6 +273,13 @@ void render(void) {
         {
             fill_rect_relative(renderer, bullets[i].movingRect, player.pos);
         }
+    }
+
+    // Draw platforms
+    set_render_colour(renderer, platformColour);
+    for (size_t i = 0; i < numPlatforms; i++)
+    {
+        fill_rect_relative(renderer, platforms[i], player.pos);
     }
 
     SDL_RenderPresent(renderer); // buffer swap

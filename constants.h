@@ -15,6 +15,14 @@ float const PLAYER_SPEED = 0.4;
 // Max num bullets possible to exist at once
 int const maxBullets = 1000;
 int const BULLET_SIZE = 20;
+
 Colour bulletColour = {255, 0, 0};
 Colour playerColour = {0, 0, 255};
 Colour bgColour = {10, 10, 10};
+Colour platformColour = {0, 255, 0};
+
+int const platformGridSize = 10;
+int const numPlatforms = platformGridSize * platformGridSize;
+int const platformHeight = 20;
+int const platformWidth = 100;
+int const platformSeparation = 200;

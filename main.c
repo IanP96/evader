@@ -195,7 +195,7 @@ void spawn_bullet(Time time)
     bullet->movingRect.pos.y = player.pos.y + WINDOW_HEIGHT * 0.5;
 
     // Bullet goes toward player
-    bullet->movingRect.dir = scaled_vector(relative_pos(player.pos, bullet->movingRect.pos), PLAYER_SPEED);
+    bullet->movingRect.dir = scaled_vector(relative_pos(player.pos, bullet->movingRect.pos), playerHorizontalSpeed);
 }
 
 /**
@@ -222,8 +222,8 @@ void update(void) {
 
     // move player
     player.dir.x = 0;
-    if (keys.l) player.dir.x = -PLAYER_SPEED;
-    else if (keys.r) player.dir.x = PLAYER_SPEED;
+    if (keys.l) player.dir.x = -playerHorizontalSpeed;
+    else if (keys.r) player.dir.x = playerHorizontalSpeed;
     player.dir.y += gravity;
     // Don't exceed terminal velocity
     if (player.dir.y > terminalVelocity)
@@ -240,7 +240,7 @@ void update(void) {
         }
     }
     if (onPlatform && keys.u)
-        player.dir.y = -PLAYER_SPEED;
+        player.dir.y = -playerJumpSpeed;
 
     // Move bullets
     for (size_t i = 0; i < maxBullets; i++) {
@@ -300,6 +300,5 @@ int main(void) {
     }
 
     destroy_window();
-    
     return 0;
 }

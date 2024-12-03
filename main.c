@@ -76,26 +76,22 @@ void process_input(void) {
         gameRunning = false;
         break;
     case SDL_KEYDOWN:
-        keys.l = false;
-        keys.r = false;
-        keys.u = false;
-        keys.d = false;
         switch (event.key.keysym.sym) {
         case SDLK_ESCAPE:
             printf("Esc pressed\n");
             gameRunning = false;
             break;
         case SDLK_LEFT:
-            keys.l = true;
+            if (!keys.r) keys.l = true;
             break;
         case SDLK_RIGHT:
-            keys.r = true;
+            if (!keys.l) keys.r = true;
             break;
         case SDLK_UP:
-            keys.u = true;
+            if (!keys.d) keys.u = true;
             break;
         case SDLK_DOWN:
-            keys.d = true;
+            if (!keys.u) keys.d = true;
             break;
         default:
             break;
@@ -226,20 +222,25 @@ void update(void) {
 
     // move player
     player.dir.x = 0;
-    player.dir.y = 0;
-    if (keys.l)
+    if (keys.l) player.dir.x = -PLAYER_SPEED;
+    else if (keys.r) player.dir.x = PLAYER_SPEED;
+    player.dir.y += gravity;
+    // Don't exceed terminal velocity
+    if (player.dir.y > terminalVelocity)
+        player.dir.y = terminalVelocity;
+    bool onPlatform = false;
+    for (size_t i = 0; i < numPlatforms; i++)
     {
-        player.dir.x = -PLAYER_SPEED;
-    } else if (keys.r)
-    {
-        player.dir.x = PLAYER_SPEED;
-    } else if (keys.u)
-    {
-        player.dir.y = -PLAYER_SPEED;
-    } else if (keys.d)
-    {
-        player.dir.y = PLAYER_SPEED;
+        if (would_collide(player, platforms[i], delta) == EDGE_BOTTOM)
+        {
+            onPlatform = true;
+            player.pos.y = platforms[i].pos.y - PLAYER_SIZE - 0.0001;
+            player.dir.y = 0;
+            break;
+        }
     }
+    if (onPlatform && keys.u)
+        player.dir.y = -PLAYER_SPEED;
 
     // Move bullets
     for (size_t i = 0; i < maxBullets; i++) {

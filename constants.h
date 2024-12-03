@@ -13,7 +13,7 @@ int const PLAYER_SIZE = 10;
 // player horizontal movement in pixels per ms
 float const playerHorizontalSpeed = 0.4;
 // Vertical player speed after jump
-float const playerJumpSpeed = 0.5;
+float const playerJumpSpeed = 0.6;
 // Max num bullets possible to exist at once
 int const maxBullets = 1000;
 int const BULLET_SIZE = 20;

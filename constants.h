@@ -25,6 +25,7 @@ Colour playerColour = {0, 0, 255};
 Colour bgColour = {205, 246, 255};
 Colour platformColour = {0, 200, 0};
 Colour coinColour = {230, 230, 0};
+Colour greyCoinColour = {20, 20, 20};
 
 int const platformGridSize = 10;
 int const numPlatforms = platformGridSize * platformGridSize;
@@ -32,7 +33,9 @@ int const platformHeight = 20;
 int const platformWidth = 100;
 int const platformSeparation = 200;
 
-int const numCoins = 30;
+int const coinDisplayGridSize = 5;
+int const coinDisplayWidth = 8;
+int const numCoins = coinDisplayGridSize * coinDisplayGridSize;
 
 float const gravity = 0.01;
 float const terminalVelocity = 3;

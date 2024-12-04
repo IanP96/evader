@@ -21,6 +21,14 @@ void fill_rect(SDL_Renderer* renderer, MovingRect rect) {
     SDL_RenderFillRect(renderer, &sdlRect);
 }
 
+void fill_rect_standard(SDL_Renderer* renderer, MovingRect rect) {
+    SDL_Rect sdlRect = {
+        .x = (int)rect.pos.x, .y = (int)rect.pos.y, 
+        .w = (int)rect.w, .h = (int)rect.h
+    };
+    SDL_RenderFillRect(renderer, &sdlRect);
+}
+
 void fill_rect_relative(SDL_Renderer* renderer, MovingRect rect, OrderedPair relativeTo) {
     rect.pos = relative_pos(rect.pos, relativeTo);
     fill_rect(renderer, rect);

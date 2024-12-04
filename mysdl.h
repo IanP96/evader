@@ -24,6 +24,9 @@ void set_render_colour(SDL_Renderer* renderer, Colour colour);
 // Draw rectangle. (0, 0) will be the centre of the screen.
 void fill_rect(SDL_Renderer* renderer, MovingRect rect);
 
+// Draw rectangle using normal SDL coordinate system - (0, 0) is top-left corner
+void fill_rect_standard(SDL_Renderer* renderer, MovingRect rect);
+
 // Draw rectangle with position relative to given pos.
 // The given pos will be the considered the centre of the screen
 void fill_rect_relative(SDL_Renderer* renderer, MovingRect rect, OrderedPair relativeTo);

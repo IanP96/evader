@@ -349,6 +349,21 @@ void render(void) {
         }
     }
 
+    // Draw coin display
+    for (int i = 0; i < numCoins; i++)
+    {
+        Colour colour = (i < numCoinsLeft) ? coinColour : greyCoinColour;
+        int row = i / coinDisplayGridSize;
+        int col = i % coinDisplayGridSize;
+        set_render_colour(renderer, colour);
+        MovingRect coin;
+        coin.pos.x = coinDisplayWidth * (1 + col * 2);
+        coin.pos.y = coinDisplayWidth * (1 + row * 2);
+        coin.w = coinDisplayWidth;
+        coin.h = coinDisplayWidth;
+        fill_rect_standard(renderer, coin);
+    }
+
     SDL_RenderPresent(renderer); // buffer swap
 }
 

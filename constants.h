@@ -1,3 +1,6 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
 #include <stdint.h>
 
 #include "rect.h"
@@ -7,39 +10,45 @@ typedef struct Bullet {
     MovingRect movingRect;
 } Bullet;
 
-int const PLAYER_SIZE = 10;
+typedef enum GameState {
+    STATE_CONTINUE, STATE_MAIN, STATE_GAME_OVER, STATE_EXIT
+} GameState;
+
+extern int const PLAYER_SIZE;
 // player horizontal movement in pixels per ms
-float const playerHorizontalSpeed = 0.4;
+extern float const playerHorizontalSpeed;
 // Vertical player speed after jump
-float const playerJumpSpeed = 0.6;
+extern float const playerJumpSpeed;
 // Max num bullets possible to exist at once.
 // Once this limit is reached, new bullets will replace the oldest bullets
-int const maxBullets = 20;
-int const BULLET_SIZE = 20;
-int const coinSize = 20;
+#define MAX_BULLETS 20
+extern int const BULLET_SIZE;
+extern int const coinSize;
 
-Colour bulletColour = {200, 0, 0};
-Colour playerColour = {0, 0, 255};
+extern Colour bulletColour;
+extern Colour playerColour;
 // Sky colour
-Colour bgColour = {205, 246, 255};
-Colour platformColour = {0, 200, 0};
-Colour coinColour = {230, 230, 0};
-Colour greyCoinColour = {20, 20, 20};
+extern Colour bgColour;
+extern Colour platformColour;
+extern Colour coinColour;
+extern Colour greyCoinColour;
 
-int const platformGridSize = 10;
-int const numPlatforms = platformGridSize * platformGridSize;
-int const platformHeight = 20;
-int const platformWidth = 100;
-int const platformSeparation = 200;
+#define PLATFORM_GRID_SIZE 10
+#define NUM_PLATFORMS (PLATFORM_GRID_SIZE * PLATFORM_GRID_SIZE)
+extern int const platformHeight;
+extern int const platformWidth;
+extern int const platformSeparation;
 
-int const coinDisplayGridSize = 5;
-int const coinDisplayWidth = 8;
-int const numCoins = coinDisplayGridSize * coinDisplayGridSize;
+#define COIN_DISPLAY_GRID_SIZE 5
+extern int const coinDisplayWidth;
+#define NUM_COINS (COIN_DISPLAY_GRID_SIZE * COIN_DISPLAY_GRID_SIZE)
 
-float const gravity = 0.01;
-float const terminalVelocity = 3;
+extern float const gravity;
+extern float const terminalVelocity;
 
 // Min time to wait before spawning bullet in ms
-int const minBulletFreq = 1000;
+extern int const minBulletFreq;
 // Max time to wait before spawning bullet in ms
-int const maxBulletFreq = 5000;
+extern int const maxBulletFreq;
+
+#endif

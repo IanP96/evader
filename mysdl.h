@@ -31,4 +31,4 @@ void fill_rect_standard(SDL_Renderer* renderer, MovingRect rect);
 // The given pos will be the considered the centre of the screen
 void fill_rect_relative(SDL_Renderer* renderer, MovingRect rect, OrderedPair relativeTo);
 
-#endif // !MYSDL_H
+#endif

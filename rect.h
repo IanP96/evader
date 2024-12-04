@@ -37,4 +37,4 @@ typedef enum Edge {
 
 Edge would_collide(MovingRect rect1, MovingRect rect2, float delta);
 
-#endif // !RECT_H
+#endif

@@ -235,9 +235,19 @@ void spawn_bullet(Time time)
     bullet->movingRect.w = BULLET_SIZE;
     bullet->movingRect.h = BULLET_SIZE;
 
-    // todo more advanced logic for bullet spawn location
-    bullet->movingRect.pos.x = player.pos.x + WINDOW_WIDTH * 0.5;
-    bullet->movingRect.pos.y = player.pos.y + WINDOW_HEIGHT * 0.5;
+    // Random bullet spawn location
+    OrderedPair pos;
+    if (arc4random_uniform(2) == 0)
+    {
+        // spawn on top/bottom edge
+        pos.y = player.pos.y + WINDOW_HEIGHT / 2 * pow(-1, arc4random_uniform(2));
+        pos.x = player.pos.x - WINDOW_WIDTH / 2 + arc4random_uniform(WINDOW_WIDTH);
+    } else {
+        // spawn on left-right edge
+        pos.x = player.pos.x + WINDOW_WIDTH / 2 * pow(-1, arc4random_uniform(2));
+        pos.y = player.pos.y - WINDOW_HEIGHT / 2 + arc4random_uniform(WINDOW_HEIGHT);
+    }
+    bullet->movingRect.pos = pos;
 
     // Bullet goes toward player
     bullet->movingRect.dir = scaled_vector(relative_pos(player.pos, bullet->movingRect.pos), playerHorizontalSpeed);

@@ -1,8 +1,12 @@
 #include <stdint.h>
 
+#include <SDL2/SDL.h>
+
 #include "rect.h"
 #include "mysdl.h"
 #include "constants.h"
+
+unsigned int const soundVolume = SDL_MIX_MAXVOLUME * 2 / 3;
 
 int const PLAYER_SIZE = 10;
 // player horizontal movement in pixels per ms

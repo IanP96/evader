@@ -11,8 +11,10 @@ typedef struct Bullet {
 } Bullet;
 
 typedef enum GameState {
-    STATE_CONTINUE, STATE_MAIN, STATE_GAME_OVER, STATE_EXIT
+    STATE_CONTINUE, STATE_MAIN, STATE_GAME_OVER_WON, STATE_GAME_OVER_LOST, STATE_EXIT
 } GameState;
+
+extern unsigned int const soundVolume;
 
 extern int const PLAYER_SIZE;
 // player horizontal movement in pixels per ms
@@ -39,7 +41,7 @@ extern int const platformHeight;
 extern int const platformWidth;
 extern int const platformSeparation;
 
-#define COIN_DISPLAY_GRID_SIZE 5
+#define COIN_DISPLAY_GRID_SIZE 1
 extern int const coinDisplayWidth;
 #define NUM_COINS (COIN_DISPLAY_GRID_SIZE * COIN_DISPLAY_GRID_SIZE)
 

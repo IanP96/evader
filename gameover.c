@@ -1,5 +1,8 @@
+#include <stdbool.h>
+
 #include "gameover.h"
 #include "constants.h"
+#include "audio.h"
 
 GameState nextState;
 
@@ -31,8 +34,15 @@ void game_over_update(void) {}
 
 void game_over_render(void) {}
 
-void game_over_loop(void) {
+void game_over_loop(bool won) {
     nextState = STATE_CONTINUE;
+    initAudio();
+    if (won) {
+        // todo victory music
+        playSound("assets/sound/death.wav", soundVolume);
+    } else {
+        playSound("assets/sound/death.wav", soundVolume);
+    }
     while (nextState == STATE_CONTINUE)
     {
         SDL_Delay(DELAY); // delay to avoid high cpu consumption
@@ -40,4 +50,5 @@ void game_over_loop(void) {
         game_over_update();
         game_over_render();
     }
+    endAudio();
 }

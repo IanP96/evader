@@ -6,7 +6,7 @@
  * R to restart
  */
 
-// wiki: wiki.libsdl.org
+// SDL2 wiki: wiki.libsdl.org
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +18,7 @@
 #include "rect.h"
 #include "mysdl.h"
 #include "gameover.h"
+#include "audio.h"
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -50,7 +51,8 @@ bool coinsCollected[NUM_COINS];
 // Initialises SDL, window, renderer. Returns true on success, false on failure
 bool init_window(void) {
 
-    if (SDL_Init(SDL_INIT_EVERYTHING)) {
+    // Timer not used yet, just in case I want to use it later
+    if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER)) {
         // init failed
         fprintf(stderr, "Error initialising sdl\n");
         return 0;
@@ -83,20 +85,21 @@ bool init_window(void) {
     return true;
 }
 
-// Destroy SDL renderer and window, exit
-void destroy_window(void) {
+// Destroy SDL renderer and window, end music, exit
+void exit_game(void) {
     printf("Destroying window\n");
     // destroying in reverse order of creation
+    endAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
     exit(EXIT_SUCCESS);
 }
 
-// Game over, destroy window
-void game_over(void) {
+// Game over, won or lost
+void game_over(bool won) {
     printf("Game over\n");
-    nextState = STATE_GAME_OVER;
+    nextState = won ? STATE_GAME_OVER_WON : STATE_GAME_OVER_LOST;
 }
 
 /**
@@ -104,6 +107,9 @@ void game_over(void) {
  * 
  */
 void setup(void) {
+
+    initAudio();
+    playMusic("assets/sound/bgm.wav", soundVolume);
 
     Time startTime = SDL_GetTicks64();
     lastFrameTime = startTime;
@@ -327,15 +333,20 @@ void update(void) {
             numCoinsLeft--;
             coinsCollected[i] = true;
             bulletFreq -= (maxBulletFreq - minBulletFreq) / (NUM_COINS - 1);
+            if (numCoinsLeft == 0)
+                game_over(true);
         }
     }
     
     // Move bullets
     for (size_t i = 0; i < numBulletsSpawned; i++) {
-        if (would_collide(player, bullets[i].movingRect, delta) != -1)
+        if (
+            would_collide(player, bullets[i].movingRect, delta) != -1
+            && nextState == STATE_CONTINUE
+        )
         {
             // Player collided with bullet
-            game_over();
+            game_over(false);
         }
         move_rect(&(bullets[i].movingRect), delta);
     }
@@ -402,6 +413,7 @@ void main_loop(void) {
         update();
         render();
     }
+    endAudio();
 }
 
 int main(void) {
@@ -416,13 +428,16 @@ int main(void) {
         switch (nextState)
         {
         case STATE_EXIT:
-            destroy_window();
+            exit_game();
             return 0;
         case STATE_MAIN:
             main_loop();
             break;
-        case STATE_GAME_OVER:
-            game_over_loop();
+        case STATE_GAME_OVER_WON:
+            game_over_loop(true);
+            break;
+        case STATE_GAME_OVER_LOST:
+            game_over_loop(false);
             break;
         default:
             break;

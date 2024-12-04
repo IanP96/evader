@@ -35,6 +35,7 @@ extern Colour platformColour;
 extern Colour coinColour;
 extern Colour greyCoinColour;
 
+// Number of platforms per row/column
 #define PLATFORM_GRID_SIZE 10
 #define NUM_PLATFORMS (PLATFORM_GRID_SIZE * PLATFORM_GRID_SIZE)
 extern int const platformHeight;

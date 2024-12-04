@@ -43,6 +43,8 @@ unsigned int numBulletsSpawned;
 int nextBulletNum;
 
 MovingRect platforms[NUM_PLATFORMS];
+// Big wall of red below all the platforms, touch it and you die
+MovingRect lava;
 
 MovingRect coins[NUM_COINS];
 int numCoinsLeft;
@@ -189,6 +191,16 @@ void setup(void) {
             coinCount++;
         }
     }
+
+    // Create lava
+    lava.pos.y = PLATFORM_GRID_SIZE * (platformSeparation + platformHeight) + WINDOW_HEIGHT; // add
+    // window height to ensure it is out of view
+    int platformAreaWidth = PLATFORM_GRID_SIZE * (platformSeparation + platformWidth);
+    lava.pos.x = -platformAreaWidth;
+    lava.w = platformAreaWidth * 3;
+    lava.h = lava.w;
+    lava.dir.x = 0;
+    lava.dir.y = 0;
 }
 
 void process_input(void) {
@@ -343,7 +355,7 @@ void update(void) {
     // Move bullets
     for (size_t i = 0; i < numBulletsSpawned; i++) {
         if (
-            would_collide(player, bullets[i].movingRect, delta) != -1
+            would_collide(player, bullets[i].movingRect, delta) != EDGE_NONE
             && nextState == STATE_CONTINUE
         )
         {
@@ -353,6 +365,12 @@ void update(void) {
         move_rect(&(bullets[i].movingRect), delta);
     }
 
+    // Collision with lava
+    if (would_collide(player, lava, delta) != EDGE_NONE)
+    {
+        game_over(false);
+    }
+    
     // Move player
     move_rect(&player, delta);
 }
@@ -377,6 +395,10 @@ void render(void) {
     {
         fill_rect_relative(renderer, platforms[i], player.pos);
     }
+
+    // Draw lava
+    set_render_colour(renderer, bulletColour);
+    fill_rect_relative(renderer, lava, player.pos);
 
     // Draw coins
     set_render_colour(renderer, coinColour);

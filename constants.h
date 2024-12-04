@@ -41,7 +41,7 @@ extern int const platformHeight;
 extern int const platformWidth;
 extern int const platformSeparation;
 
-#define COIN_DISPLAY_GRID_SIZE 1
+#define COIN_DISPLAY_GRID_SIZE 5
 extern int const coinDisplayWidth;
 #define NUM_COINS (COIN_DISPLAY_GRID_SIZE * COIN_DISPLAY_GRID_SIZE)
 

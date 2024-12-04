@@ -6,7 +6,7 @@ LDFLAGS = -L/opt/homebrew/lib -lSDL2 -lm
 .DEFAULT_GOAL := main
 
 main: main.o constants.o rect.o mysdl.o gameover.o audio.o
-main.o: main.c constants.h rect.h mysdl.h gameover.h
+main.o: main.c constants.h rect.h mysdl.h gameover.h audio.h
 
 run:
 	make

@@ -324,7 +324,7 @@ void update(void) {
     if (onPlatform && keys.u)
         player.dir.y = -playerJumpSpeed;
     
-    // Player collecting coins
+    // Collecting coins
     for (size_t i = 0; i < NUM_COINS; i++)
     {
         if (!coinsCollected[i] && would_collide(player, coins[i], delta) != EDGE_NONE)
@@ -335,6 +335,8 @@ void update(void) {
             bulletFreq -= (maxBulletFreq - minBulletFreq) / (NUM_COINS - 1);
             if (numCoinsLeft == 0)
                 game_over(true);
+            else
+                playSound("assets/sound/coin.wav", soundVolume);
         }
     }
     

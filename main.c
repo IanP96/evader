@@ -18,7 +18,7 @@ Time lastFrameTime;
 // Time of last bullet spawn in ms
 Time lastBulletSpawnTime;
 // Time to wait before spawning next bullet
-Time bulletSpawnDelay;
+Time bulletFreq;
 
 MovingRect player;
 // Which keys are currently pressed
@@ -102,7 +102,7 @@ void setup(void) {
     player.dir.x = 0;
     player.dir.y = 0;
 
-    bulletSpawnDelay = 1000;
+    bulletFreq = maxBulletFreq;
 
     // Choose locations for coins
     // Which platforms have coins above them
@@ -264,7 +264,7 @@ void update(void) {
     lastFrameTime = currentTime;
     // Should I spawn a bullet on this iteration?
     bool spawnBullet = false;
-    if (currentTime > lastBulletSpawnTime + bulletSpawnDelay)
+    if (currentTime > lastBulletSpawnTime + bulletFreq)
     {
         lastBulletSpawnTime = currentTime;
         spawnBullet = true;
@@ -305,6 +305,7 @@ void update(void) {
             // Coin collected
             numCoinsLeft--;
             coinsCollected[i] = true;
+            bulletFreq -= (maxBulletFreq - minBulletFreq) / (numCoins - 1);
         }
     }
     

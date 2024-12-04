@@ -39,3 +39,8 @@ int const numCoins = coinDisplayGridSize * coinDisplayGridSize;
 
 float const gravity = 0.01;
 float const terminalVelocity = 3;
+
+// Min time to wait before spawning bullet in ms
+int const minBulletFreq = 1000;
+// Max time to wait before spawning bullet in ms
+int const maxBulletFreq = 5000;

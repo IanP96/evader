@@ -5,8 +5,6 @@
 
 typedef struct Bullet {
     MovingRect movingRect;
-    // When was bullet spawned
-    Time birth;
 } Bullet;
 
 int const PLAYER_SIZE = 10;
@@ -14,8 +12,9 @@ int const PLAYER_SIZE = 10;
 float const playerHorizontalSpeed = 0.4;
 // Vertical player speed after jump
 float const playerJumpSpeed = 0.6;
-// Max num bullets possible to exist at once
-int const maxBullets = 1000;
+// Max num bullets possible to exist at once.
+// Once this limit is reached, new bullets will replace the oldest bullets
+int const maxBullets = 20;
 int const BULLET_SIZE = 20;
 int const coinSize = 20;
 

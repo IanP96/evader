@@ -27,7 +27,8 @@ struct Keys {
 } keys = {false, false, false, false};
 
 Bullet bullets[maxBullets];
-bool bulletsUsed[maxBullets];
+unsigned int numBulletsSpawned;
+int nextBulletNum;
 
 MovingRect platforms[numPlatforms];
 
@@ -92,9 +93,13 @@ void game_over(void) {
  * 
  */
 void setup(void) {
+
     lastFrameTime = SDL_GetTicks64();
+
     lastBulletSpawnTime = SDL_GetTicks64();
-    memset(bulletsUsed, false, sizeof(bulletsUsed));
+    nextBulletNum = 0;
+    numBulletsSpawned = 0;
+
     player.pos.x = 0;
     player.pos.y = 0;
     player.w = PLAYER_SIZE;
@@ -219,18 +224,15 @@ void process_input(void) {
 }
 
 // Spawn a new bullet, crash if no more space for a bullet
-void spawn_bullet(Time time)
+void spawn_bullet(void)
 {
-    size_t i;
-    for (i = 0; i < maxBullets && bulletsUsed[i]; i++);
-    if (i == maxBullets)
-    {
-        fprintf(stderr, "Too many bullets\n");
-        destroy_window();
-    }
-    bulletsUsed[i] = true;
+    size_t i = nextBulletNum;
+    nextBulletNum++;
+    if (nextBulletNum == maxBullets)
+        nextBulletNum = 0;
+    if (numBulletsSpawned < maxBullets)
+        numBulletsSpawned++;
     Bullet* bullet = bullets + i;
-    bullet->birth = time;
 
     bullet->movingRect.w = BULLET_SIZE;
     bullet->movingRect.h = BULLET_SIZE;
@@ -272,7 +274,7 @@ void update(void) {
 
     if (spawnBullet)
     {
-        spawn_bullet(currentTime);
+        spawn_bullet();
     }
 
     // Set player velocity
@@ -310,16 +312,13 @@ void update(void) {
     }
     
     // Move bullets
-    for (size_t i = 0; i < maxBullets; i++) {
-        if (bulletsUsed[i])
+    for (size_t i = 0; i < numBulletsSpawned; i++) {
+        if (would_collide(player, bullets[i].movingRect, delta) != -1)
         {
-            if (would_collide(player, bullets[i].movingRect, delta) != -1)
-            {
-                // Player collided with bullet
-                game_over();
-            }
-            move_rect(&(bullets[i].movingRect), delta);
+            // Player collided with bullet
+            game_over();
         }
+        move_rect(&(bullets[i].movingRect), delta);
     }
 
     // Move player
@@ -336,11 +335,8 @@ void render(void) {
 
     // Draw bullets
     set_render_colour(renderer, bulletColour);
-    for (size_t i = 0; i < maxBullets; i++) {
-        if (bulletsUsed[i])
-        {
-            fill_rect_relative(renderer, bullets[i].movingRect, player.pos);
-        }
+    for (size_t i = 0; i < numBulletsSpawned; i++) {
+        fill_rect_relative(renderer, bullets[i].movingRect, player.pos);
     }
 
     // Draw platforms

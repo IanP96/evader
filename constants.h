@@ -50,8 +50,8 @@ extern float const gravity;
 extern float const terminalVelocity;
 
 // Min time to wait before spawning bullet in ms
-extern int const minBulletFreq;
+extern int const minBulletDelay;
 // Max time to wait before spawning bullet in ms
-extern int const maxBulletFreq;
+extern int const maxBulletDelay;
 
 #endif

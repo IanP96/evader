@@ -34,6 +34,6 @@ float const gravity = 0.01;
 float const terminalVelocity = 3;
 
 // Min time to wait before spawning bullet in ms
-int const minBulletFreq = 1000;
+int const minBulletDelay = 500;
 // Max time to wait before spawning bullet in ms
-int const maxBulletFreq = 5000;
+int const maxBulletDelay = 5000;

@@ -55,17 +55,23 @@ MovingRect coins[NUM_COINS];
 int numCoinsLeft;
 bool coinsCollected[NUM_COINS];
 
+#if ENABLE_LOG
+
 void log_msg(char* msg) {
-    #if ENABLE_LOG
     printf("%s", msg);
-    #endif
 }
 
 void log_err(char* errMsg) {
-    #if ENABLE_LOG
     fprintf(stderr, "%s", errMsg);
-    #endif
 }
+
+#else
+
+void log_msg(char* msg __attribute__((unused))) {}
+
+void log_err(char* errMsg __attribute__((unused))) {}
+
+#endif
 
 // Initialises SDL, window, renderer. Returns true on success, false on failure
 bool init_sdl(void) {

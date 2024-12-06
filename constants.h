@@ -14,7 +14,7 @@ typedef enum GameState {
     STATE_CONTINUE, STATE_MAIN, STATE_GAME_OVER_WON, STATE_GAME_OVER_LOST, STATE_EXIT
 } GameState;
 
-#define ENABLE_LOG 1
+#define ENABLE_LOG 0
 
 extern unsigned int const soundVolume;
 

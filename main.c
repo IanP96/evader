@@ -344,7 +344,11 @@ void update(void) {
             // Coin collected
             numCoinsLeft--;
             coinsCollected[i] = true;
-            bulletDelay -= (maxBulletDelay - minBulletDelay) / (NUM_COINS - 1);
+            if (NUM_COINS != 1)
+            {
+                // Avoid division by 0
+                bulletDelay -= (maxBulletDelay - minBulletDelay) / (NUM_COINS - 1);
+            }
             if (numCoinsLeft == 0)
                 game_over(true);
             else

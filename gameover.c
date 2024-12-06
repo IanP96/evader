@@ -35,14 +35,14 @@ void game_over_update(void) {}
 void game_over_render(void) {}
 
 void game_over_loop(bool won) {
+
     nextState = STATE_CONTINUE;
+
+    // Play victory/death music
     initAudio();
-    if (won) {
-        // todo victory music
-        playSound("assets/sound/death.wav", soundVolume);
-    } else {
-        playSound("assets/sound/death.wav", soundVolume);
-    }
+    char* sound = won ? "assets/sound/win.wav" : "assets/sound/death.wav";
+    playSound(sound, soundVolume * 1.1);
+    
     while (nextState == STATE_CONTINUE)
     {
         SDL_Delay(DELAY); // delay to avoid high cpu consumption

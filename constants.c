@@ -28,7 +28,7 @@ int const platformHeight = 20;
 int const platformWidth = 100;
 int const platformSeparation = 200;
 
-int const coinDisplayWidth = 8;
+int const coinDisplayWidth = 10;
 
 float const gravity = 0.01;
 float const terminalVelocity = 3;

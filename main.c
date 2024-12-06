@@ -8,17 +8,22 @@
 
 // SDL2 wiki: wiki.libsdl.org
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "constants.h"
 #include "rect.h"
 #include "mysdl.h"
 #include "gameover.h"
 #include "audio.h"
+
+#if ENABLE_LOG
+#include <stdio.h>
+#endif
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -50,13 +55,25 @@ MovingRect coins[NUM_COINS];
 int numCoinsLeft;
 bool coinsCollected[NUM_COINS];
 
+void log_msg(char* msg) {
+    #if ENABLE_LOG
+    printf("%s", msg);
+    #endif
+}
+
+void log_err(char* errMsg) {
+    #if ENABLE_LOG
+    fprintf(stderr, "%s", errMsg);
+    #endif
+}
+
 // Initialises SDL, window, renderer. Returns true on success, false on failure
 bool init_sdl(void) {
 
     // Timer not used yet, just in case I want to use it later
     if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER)) {
         // init failed
-        fprintf(stderr, "Error initialising sdl\n");
+        log_err("Error initialising sdl\n");
         return 0;
     }
 
@@ -70,7 +87,7 @@ bool init_sdl(void) {
     );
     if (!window)
     {
-        fprintf(stderr, "Error creating window\n");
+        log_err("Error creating window\n");
         return false;
     }
     renderer = SDL_CreateRenderer(
@@ -80,7 +97,7 @@ bool init_sdl(void) {
     );
     if (!renderer)
     {
-        fprintf(stderr, "Error creating renderer\n");
+        log_err("Error creating renderer\n");
         return false;
     }
     
@@ -89,7 +106,7 @@ bool init_sdl(void) {
 
 // Destroy SDL renderer and window, end music, exit
 void exit_game(void) {
-    printf("Destroying window\n");
+    log_msg("Destroying window\n");
     // destroying in reverse order of creation
     endAudio();
     SDL_DestroyRenderer(renderer);
@@ -100,7 +117,7 @@ void exit_game(void) {
 
 // Game over, won or lost
 void game_over(bool won) {
-    printf("Game over\n");
+    log_msg("Game over\n");
     nextState = won ? STATE_GAME_OVER_WON : STATE_GAME_OVER_LOST;
 }
 
@@ -209,13 +226,13 @@ void process_input(void) {
     
     switch (event.type) {
     case SDL_QUIT: // click x button on window
-        printf("Quit event detected\n");
+        log_msg("Quit event detected\n");
         nextState = STATE_EXIT;
         break;
     case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
         case SDLK_q:
-            printf("Q pressed\n");
+            log_msg("Q pressed\n");
             nextState = STATE_EXIT;
             break;
         case SDLK_r:
@@ -491,7 +508,13 @@ void main_loop(SDL_Renderer* renderer) {
 }
 
 int main(void) {
-    printf("Game running\n");
+    #if !ENABLE_LOG
+    int devnull = open("/dev/null", O_WRONLY);
+    dup2(devnull, 1);
+    dup2(devnull, 2);
+    close(devnull);
+    #endif
+    log_msg("Game running\n");
     if (!init_sdl()) {
         exit(EXIT_FAILURE);
     }

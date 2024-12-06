@@ -108,7 +108,7 @@ bool init_sdl(void) {
 void exit_game(void) {
     log_msg("Destroying window\n");
     // destroying in reverse order of creation
-    endAudio();
+    // endAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

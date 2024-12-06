@@ -23,7 +23,7 @@ extern float const playerHorizontalSpeed;
 extern float const playerJumpSpeed;
 // Max num bullets possible to exist at once.
 // Once this limit is reached, new bullets will replace the oldest bullets
-#define MAX_BULLETS 20
+#define MAX_BULLETS 100
 extern int const BULLET_SIZE;
 extern int const coinSize;
 

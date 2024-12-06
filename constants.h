@@ -34,6 +34,7 @@ extern Colour bgColour;
 extern Colour platformColour;
 extern Colour coinColour;
 extern Colour greyCoinColour;
+extern Colour faceColour;
 
 // Number of platforms per row/column
 #define PLATFORM_GRID_SIZE 10
@@ -53,5 +54,8 @@ extern float const terminalVelocity;
 extern int const minBulletDelay;
 // Max time to wait before spawning bullet in ms
 extern int const maxBulletDelay;
+
+// Size of smile/frown when you win in pixels
+extern int const facePixelSize;
 
 #endif

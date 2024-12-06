@@ -51,7 +51,7 @@ int numCoinsLeft;
 bool coinsCollected[NUM_COINS];
 
 // Initialises SDL, window, renderer. Returns true on success, false on failure
-bool init_window(void) {
+bool init_sdl(void) {
 
     // Timer not used yet, just in case I want to use it later
     if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER)) {
@@ -379,7 +379,48 @@ void update(void) {
     move_rect(&player, delta);
 }
 
-void render(void) {
+void draw_smile(void) {
+    MovingRect smile[5];
+    // Left eye
+    smile[0].pos.x = -2;
+    smile[0].pos.y = -2;
+    smile[0].w = 1;
+    smile[0].h = 1;
+    // Right eye
+    smile[1].pos.x = 1;
+    smile[1].pos.y = -2;
+    smile[1].w = 1;
+    smile[1].h = 1;
+    // Left side of mouth
+    smile[2].pos.x = -2;
+    smile[2].pos.y = 0;
+    smile[2].w = 1;
+    smile[2].h = 2;
+    // Right side of mouth
+    smile[3].pos.x = 1;
+    smile[3].pos.y = 0;
+    smile[3].w = 1;
+    smile[3].h = 2;
+    // Bottom of mouth
+    smile[4].pos.x = -1;
+    smile[4].pos.y = 1;
+    smile[4].w = 2;
+    smile[4].h = 1;
+    // Draw
+    set_render_colour(renderer, faceColour);
+    for (int i = 0; i < 5; i++)
+    {
+        smile[i].dir.x *= facePixelSize;
+        smile[i].dir.y *= facePixelSize;
+        smile[i].pos.x *= facePixelSize;
+        smile[i].pos.y *= facePixelSize;
+        smile[i].w *= facePixelSize;
+        smile[i].h *= facePixelSize;
+        fill_rect(renderer, smile[i]);
+    }
+}
+
+void render(SDL_Renderer* renderer) {
     set_render_colour(renderer, bgColour);
     SDL_RenderClear(renderer);
 
@@ -429,24 +470,29 @@ void render(void) {
         fill_rect_standard(renderer, coin);
     }
 
+    if (nextState == STATE_GAME_OVER_WON)
+    {
+        draw_smile();
+    }
+
     SDL_RenderPresent(renderer); // buffer swap
 }
 
-void main_loop(void) {
+void main_loop(SDL_Renderer* renderer) {
     setup();
     while (nextState == STATE_CONTINUE)
     {
         SDL_Delay(DELAY); // delay to avoid high cpu consumption
         process_input();
         update();
-        render();
+        render(renderer);
     }
     endAudio();
 }
 
 int main(void) {
     printf("Game running\n");
-    if (!init_window()) {
+    if (!init_sdl()) {
         exit(EXIT_FAILURE);
     }
     nextState = STATE_MAIN;
@@ -459,7 +505,7 @@ int main(void) {
             exit_game();
             return 0;
         case STATE_MAIN:
-            main_loop();
+            main_loop(renderer);
             break;
         case STATE_GAME_OVER_WON:
             game_over_loop(true);

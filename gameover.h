@@ -2,6 +2,7 @@
 #define GAMEOVER_H
 
 #include <stdbool.h>
+#include <SDL2/SDL.h>
 
 /**
  * @brief End game (won or lost).

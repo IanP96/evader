@@ -42,7 +42,7 @@ void game_over_loop(bool won) {
     initAudio();
     char* sound = won ? "assets/sound/win.wav" : "assets/sound/death.wav";
     playSound(sound, soundVolume * 1.1);
-    
+
     while (nextState == STATE_CONTINUE)
     {
         SDL_Delay(DELAY); // delay to avoid high cpu consumption

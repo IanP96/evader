@@ -23,6 +23,7 @@ Colour bgColour = {205, 246, 255};
 Colour platformColour = {0, 200, 0};
 Colour coinColour = {230, 230, 0};
 Colour greyCoinColour = {20, 20, 20};
+Colour faceColour = {0, 0, 0};
 
 int const platformHeight = 20;
 int const platformWidth = 100;
@@ -37,3 +38,5 @@ float const terminalVelocity = 3;
 int const minBulletDelay = 500;
 // Max time to wait before spawning bullet in ms
 int const maxBulletDelay = 5000;
+
+extern int const facePixelSize = 30;

@@ -39,4 +39,4 @@ int const minBulletDelay = 500;
 // Max time to wait before spawning bullet in ms
 int const maxBulletDelay = 5000;
 
-extern int const facePixelSize = 30;
+int const facePixelSize = 30;

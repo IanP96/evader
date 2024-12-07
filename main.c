@@ -4,6 +4,7 @@
  * Arrow keys to move
  * Q to quit
  * R to restart
+ * B for bullet hell
  */
 
 // SDL2 wiki: wiki.libsdl.org
@@ -243,6 +244,10 @@ void process_input(void) {
             break;
         case SDLK_r:
             nextState = STATE_MAIN;
+            break;
+        case SDLK_b:
+            // Bullet hell
+            bulletDelay = 100;
             break;
         case SDLK_LEFT:
             if (!keys.r) keys.l = true;

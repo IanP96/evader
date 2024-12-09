@@ -21,4 +21,4 @@ You are the blue square. You must jump between the green platforms to pick up al
 
 # References
 
-`audio.c` and `audio.h` were sourced from <a href="https://github.com/jakebesworth/Simple-SDL2-Audio">GitHub</a>.
+`audio.c` and `audio.h` were sourced from <a href="https://github.com/jakebesworth/Simple-SDL2-Audio">GitHub</a>, courtesy of Jake Besworth, Lorenzo Mancini, Ted, Eric Boez and Ivan Karlović.
